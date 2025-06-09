@@ -14,9 +14,9 @@ learning_rate = 1e-3
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 eval_iters = 200
 n_embd = 64           
-n_head = 4           
-n_layer = 4           
-dropout = 0.1        
+n_head = 8          
+n_layer = 7           
+dropout = 0.2        
 # ------------
 
 torch.manual_seed(1337)
@@ -288,69 +288,16 @@ def generate_code(prompt="", max_length=300, temperature=0.7):
     generated = m.generate(context, max_new_tokens=max_length, temperature=temperature)
     return decode(generated[0].tolist())
 
-def complete_function(function_start, max_length=200):
-    """Complete a Python function given its beginning"""
-    return generate_code(function_start, max_length, temperature=0.8)
-
-def generate_algorithm(algorithm_type="sort", max_length=250):
-    """Generate an algorithm of a specific type"""
-    prompts = {
-        "sort": "def ",
-        "search": "def binary_search(",
-        "math": "def calculate_",
-        "list": "def process_list(",
-        "string": "def string_"
-    }
-    
-    prompt = prompts.get(algorithm_type, "def ")
-    return generate_code(prompt, max_length, temperature=0.7)
-
 # Test the trained model
 print("\n🎯 Testing the Self-Attention Python Code Generator:")
 print("=" * 50)
 
-# Test 1: Free generation
-print("\n1. Free code generation:")
-sample1 = generate_code(max_length=300)
-print(sample1)
-
-# Test 2: Function completion
 print("\n2. Function completion:")
-function_start = "def fibonacci(n):\n    if n <= 1:\n        return"
-completion = complete_function(function_start)
+function_start = "for i"
+completion = generate_code(function_start)
 print(completion)
 
-# Test 3: Algorithm generation
-print("\n3. Algorithm generation:")
-algorithm = generate_algorithm("sort")
-print(algorithm)
 
-# Test 4: Interactive generation
-print("\n4. 🎪 Interactive generation - try different prompts!")
-test_prompts = [
-    "def bubble_sort(",
-    "def is_prime(",
-    "class LinkedList:",
-    "for i in range("
-]
+  
 
-for prompt in test_prompts:
-    print(f"\n🎯 Prompt: '{prompt}'")
-    result = generate_code(prompt, max_length=150, temperature=0.6)
-    print(f"Generated: {result[:100]}...")
-
-print("\n🌟 Amazing! Your model now has MEMORY and CONTEXT AWARENESS!")
-print("🧠 It can remember function names, variable types, and coding patterns!")
-print("🚀 This is the same architecture that powers ChatGPT and GPT-4!")
-
-# Save the model
-print("\n💾 Saving model...")
-torch.save({
-    'model_state_dict': model.state_dict(),
-    'vocab_size': vocab_size,
-    'stoi': stoi,
-    'itos': itos,
-}, 'python_code_generator.pth')
-
-print("✅ Model saved as 'python_code_generator.pth'")
 
